@@ -1,0 +1,12 @@
+---
+- hosts: wg
+  roles:
+    - wg
+
+- hosts: zsh
+  roles:
+    - zsh
+
+- hosts: zabbix
+  roles:
+    - zabbix-agent
