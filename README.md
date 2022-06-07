@@ -4,6 +4,7 @@ This Ansible roles install the last version of some usefull apps on Ubuntu:
 - Wireguard(wg)
 - Zsh and oh-my-zsh
 - Zabbix agent
+- nginx
 
  ## What is Ansible?
 
