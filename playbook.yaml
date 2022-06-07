@@ -10,3 +10,7 @@
 - hosts: zabbix
   roles:
     - zabbix-agent
+    
+- hosts: nginx
+  roles:
+    - nginx
