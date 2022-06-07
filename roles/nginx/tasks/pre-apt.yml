@@ -1,0 +1,18 @@
+---
+  - name: Install requeired packages
+    apt:
+      name: "{{ packages_to_install_deb }}"
+      state: present
+
+  - name: Add nginx key
+    apt_key:
+      url: "https://nginx.org/keys/nginx_signing.key"
+      state: present
+      id: "573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62"
+      keyring: "/usr/share/keyrings/nginx-archive-keyring.gpg"
+  
+  - name: Add nginx repo
+    apt_repository:
+      repo: "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu {{ ansible_facts.lsb.codename }} nginx"
+      state: present
+

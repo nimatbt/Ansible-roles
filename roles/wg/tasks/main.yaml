@@ -1,0 +1,52 @@
+
+
+---
+# tasks file for wg
+
+#Check for wireguard installation and current version
+- name: check for wireguard installation and current version
+  command: wg --version
+  register: wg_current_version
+  ignore_errors: true
+  tags:
+    - always
+
+#Update apt
+- name: update apt cache and upgrade system
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: yes
+  when: wg_current_version.rc == 2
+  ignore_errors: true
+  tags:
+    - install
+    - update
+
+#Install wireguard
+- name: install wireguard
+  become: yes
+  apt:
+    name: wireguard
+    state: latest
+  when: wg_current_version.rc == 2
+  tags:
+    - install
+
+#Copy Config files
+- name: Copy config files
+  become: yes
+  ansible.builtin.copy:
+    src: wg/wg1.conf
+    dest: /etc/wireguard/wg1.conf
+
+#Generating a key Pair
+- name: Generate key
+  become: yes
+  shell: |
+    wg genkey | tee /etc/wireguard/private.key
+    cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
+  when: wg_current_version.rc == 0
+  tags:
+    - install
+    - key

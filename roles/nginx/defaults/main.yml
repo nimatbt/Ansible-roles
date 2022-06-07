@@ -1,0 +1,9 @@
+---
+# defaults file for nginx
+packages_to_install_deb:
+  - curl
+  - gnupg2
+  - ca-certificates
+  - lsb-release
+  - ubuntu-keyring
+

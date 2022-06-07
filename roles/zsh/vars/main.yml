@@ -1,0 +1,17 @@
+---
+zsh_packages:
+  - zsh
+  - git-core
+  - curl
+  - fonts-powerline
+
+# zsh default theme 
+oh_my_zsh_theme: af-magic
+
+# Default plugins
+oh_my_zsh_plugins:
+  - git
+  - sudo
+  - systemd
+  - z
+  - ubuntu

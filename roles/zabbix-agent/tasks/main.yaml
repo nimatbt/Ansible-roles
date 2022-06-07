@@ -1,0 +1,50 @@
+---
+# tasks file for zabbix-agent
+
+# check zabbix agent
+- name: check for zabbix-agent installation
+  command: systemctl status zabbix-agent
+  register: zabbix
+  ignore_errors: true
+  tags:
+    - always
+
+
+# Install zabbix agent
+- name: install zabbix agent
+  become: yes
+  apt: 
+    pkg=zabbix-agent
+    state=present
+  when: zabbix.rc == 4
+  tags:
+    - install
+
+# configure zabbix agent
+- name: configure zabbix agent
+  become: yes
+  template:
+    src=zabbix_agentd.conf
+    dest=/etc/zabbix/zabbix_agentd.conf
+#  notify: restart zabbix-agent
+  tags:
+    - config
+
+# Create config file
+- name: create zabbix-agent config directory
+  become: yes
+  file: 
+    path={{ zabbix_agent_config_include }}
+    state=directory
+  tags: 
+    - config
+
+# restart zabbix-agent
+- name: restart zabbix-agent
+  become: yes
+  command: systemctl restart zabbix-agent
+  ignore_errors: yes
+  tags:
+    - config
+    - install
+

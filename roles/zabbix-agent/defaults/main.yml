@@ -1,0 +1,24 @@
+---
+# defaults file for zabbix
+
+zabbix_agent_config_server: 192.168.30.154
+#zabbix_agent_config_listen_ip: 0.0.0.0
+zabbix_agent_config_server_active: 192.168.30.154
+zabbix_agent_config_hostname: '{{ ansible_fqdn }}'
+
+
+#zabbix_agent_config_start_agents: 3
+#zabbix_agent_config_host_meta_data: ''
+
+# NOTE: keep the trailing / !
+zabbix_agent_config_include: /etc/zabbix/zabbix_agentd.d/
+#zabbix_agent_config_include_confs: []
+
+# Package states: installed or latest
+#zabbix_agent_pkg_state: installed
+
+# Service states: started or stopped
+#zabbix_agent_service_state: started
+
+# Service enabled: yes or no
+#zabbix_agent_service_enabled: yes

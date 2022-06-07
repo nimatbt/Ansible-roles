@@ -1,0 +1,32 @@
+---
+  - name: Check installed packages
+    package_facts:
+      manager: auto
+  
+  - include_tasks: pre-apt.yml
+    when: (ansible_pkg_mgr == 'apt' and 'nginx' not in ansible_facts.packages)
+    
+
+  - name: Install nginx
+    package: 
+      name: nginx
+      state: present
+      update_cache: yes
+    notify: Restart nginx service
+    when: ('nginx' not in ansible_facts.packages)
+
+ # Copy nginx.conf config
+  - name: Copy config file
+    ansible.builtin.copy:
+      src: roles/nginx/nginx.conf
+      dest: /etc/nginx/nginx.conf
+    tags:
+      - config
+
+# Copy default.conf config
+  - name: Copy config file
+    ansible.builtin.copy:
+      src: roles/nginx/default.conf
+      dest: /etc/nginx/conf.d/default.conf
+    tags:
+      - config 

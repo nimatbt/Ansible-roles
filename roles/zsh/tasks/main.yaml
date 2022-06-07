@@ -1,0 +1,81 @@
+---
+# tasks file for zsh
+
+#Check for zsh installation and current version
+- name: check for zsh installation and current version
+  command: zsh --version
+  register: zsh_current_version
+  ignore_errors: true
+  tags:
+    - always
+
+#Update apt
+- name: update apt cache and upgrade system
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: yes
+  when: zsh_current_version.rc == 2
+  ignore_errors: true
+  tags:
+    - install
+    - update
+
+#Install zsh
+- name: install zsh
+  become: yes
+  apt:
+    name: "{{ zsh_packages }}"
+    state: latest
+  when: zsh_current_version.rc == 2
+  tags:
+    - install
+
+#Clone oh-my-zsh
+- name: clone oh-my-zsh for users
+  become: yes
+  become_user: '{{ ansible_env.USER }}'
+  command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/robbyrussell/oh-my-zsh.git .oh-my-zsh'
+  args:
+    chdir: '~{{ ansible_env.USER }}'
+    creates: '~{{ ansible_env.USER }}/.oh-my-zsh'
+  when: zsh_current_version.rc == 2
+  tags:
+    - install
+    - config
+
+#Set oh-my-zsh permission
+- name: set permissions of oh-my-zsh for users
+  become: yes
+  file:
+    path: '~{{ ansible_env.USER }}/.oh-my-zsh'
+    mode: 'go-w'
+    recurse: yes
+  when: zsh_current_version.rc == 2
+  tags:
+    - install
+    - config
+
+#Change default shell
+- name: set default shell
+  become: yes
+  user:
+    name: '{{ ansible_env.USER }}'
+    shell: /bin/zsh
+  when: zsh_current_version.rc == 2
+  tags:
+    - install
+    - config
+
+#Copy zshrc config
+- name: copy .zshrc
+  become: yes
+  ansible.builtin.copy:
+    dest: "~{{ ansible_env.USER }}/.zshrc"
+    src: .zshrc
+    force: true
+    mode: 0644
+  when: zsh_current_version.rc == 2
+  tags:
+      - install
+      - config
